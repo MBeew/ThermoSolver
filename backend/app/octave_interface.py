@@ -40,11 +40,28 @@ def ejecutar_newton(funcion, x0, tolerancia, max_iter):
         return f"Error al ejecutar Octave: {str(e)}", None, None, None
 
 def graficar_funcion(funcion, raiz):
+    def traducir_a_numpy(expr):
+        expr = expr.replace('^', '**')
+        expr = expr.replace('exp', 'np.exp')
+        expr = expr.replace('log10', 'np.log10')
+        expr = expr.replace('log', 'np.log')  # debe ir después de log10 para evitar conflicto
+        expr = expr.replace('sqrt', 'np.sqrt')
+        expr = expr.replace('sin', 'np.sin')
+        expr = expr.replace('cos', 'np.cos')
+        expr = expr.replace('tan', 'np.tan')
+        return expr
+
     try:
+        # Crear rango de valores alrededor de la raíz
         x = np.linspace(raiz - 5, raiz + 5, 400)
-        expr = funcion.replace('^', '**')
+
+        # Traducir la expresión para que sea compatible con NumPy/Python
+        expr = traducir_a_numpy(funcion)
+
+        # Evaluar la expresión
         y = [eval(expr, {"x": val, "np": np}) for val in x]
 
+        # Graficar
         plt.figure(figsize=(6, 4))
         plt.plot(x, y, label=f'f(x) = {funcion}')
         plt.axhline(0, color='black', linewidth=0.7)
@@ -52,6 +69,7 @@ def graficar_funcion(funcion, raiz):
         plt.legend()
         plt.grid(True)
 
+        # Guardar la figura en buffer y convertir a base64
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         plt.close()
@@ -61,4 +79,5 @@ def graficar_funcion(funcion, raiz):
         return img_base64
 
     except Exception as e:
+        print(f"Error al graficar: {e}")
         return None
