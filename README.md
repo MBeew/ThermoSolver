@@ -1,7 +1,7 @@
 >---
 >## ThermoSolver
 >
->**ThermoSolver** es una aplicación web interactiva diseñada para resolver problemas de transferencia de calor en el ámbito de la ingeniería, utilizando métodos numéricos implementados en GNU Octave.
+>**ThermoSolver** es una aplicación web interactiva diseñada para resolver problemas de transferencia de calor en el ámbito de la ingeniería, utilizando el método númerorico Newton-Raphson implementados en GNU Octave.
 >
 >---
 >
@@ -11,11 +11,14 @@
 >
 >---
 >
->### Tecnologías utilizadas
+>### Tecnologías Usadas
 >
->- Python (Flask para el backend)
->- GNU Octave (motor de cálculo)
->- HTML y CSS (interfaz web)
->- Render (plataforma de despliegue)
+>| Componente        | Tecnología             |
+>|------------------|-------------------------|
+>| Frontend         | HTML5, CSS3, JavaScript |
+>| Backend          | Python 3.13 + Flask     |
+>| Motor de cálculo | GNU Octave + oct2py     |
+>| Motor de cálculo | GNU Octave + oct2py     |
+>| Visualización    | Matplotlib / Plotly     |
 >
 >---

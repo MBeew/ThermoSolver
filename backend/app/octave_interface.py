@@ -3,7 +3,7 @@ import io
 import base64
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')  # Evita errores de GUI en hilos secundarios (Flask)
+matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 from oct2py import Oct2Py
 
@@ -44,7 +44,7 @@ def graficar_funcion(funcion, raiz):
         expr = expr.replace('^', '**')
         expr = expr.replace('exp', 'np.exp')
         expr = expr.replace('log10', 'np.log10')
-        expr = expr.replace('log', 'np.log')  # debe ir después de log10 para evitar conflicto
+        expr = expr.replace('log', 'np.log')  
         expr = expr.replace('sqrt', 'np.sqrt')
         expr = expr.replace('sin', 'np.sin')
         expr = expr.replace('cos', 'np.cos')

@@ -1,0 +1,67 @@
+body {
+    background-color: #fffaf3;
+    font-family: 'Orbitron', sans-serif;
+}
+
+h1 {
+    font-size: 3rem;
+    color: #ff6b00;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+
+    50% { transform: scale(1.03);} 
+
+    100% { transform: scale(1); }
+}
+
+.form-label {
+    color: #b04a00;
+}
+
+.form-control {
+    border-radius: 12px;
+    border: 1px solid #ffa94d;
+}
+
+.btn-primary {
+    background-color: #ff6b00;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #e85c00;
+}
+
+.container {
+    background: #fff3e6;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+}
+
+.animated-intro {
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

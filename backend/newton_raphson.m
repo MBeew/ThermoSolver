@@ -17,7 +17,7 @@ function [root, iteraciones, contador] = newton_raphson(f_expr, x0, tol, max_ite
             break;
         end
         
-        x1 = x0 - fx / dfx; % Paso de Newton-Raphson
+        x1 = x0 - fx / dfx; 
         
         iteraciones = [iteraciones; iter, x0, fx];
         
