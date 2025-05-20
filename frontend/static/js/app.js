@@ -1,7 +1,11 @@
+
 document.getElementById('formulario').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const funcion = document.getElementById('funcion').value.trim();
+  const T0 = parseFloat(document.getElementById('T0').value.replace(',', '.'));
+  const Tamb = parseFloat(document.getElementById('Tamb').value.replace(',', '.'));
+  const Tcrit = parseFloat(document.getElementById('Tcrit').value.replace(',', '.'));
+  const k = parseFloat(document.getElementById('k').value.replace(',', '.'));
   const x0 = parseFloat(document.getElementById('x0').value.replace(',', '.'));
   const tolerancia = parseFloat(document.getElementById('tolerancia').value.replace(',', '.'));
   const max_iter = parseInt(document.getElementById('max_iter').value);
@@ -20,15 +24,15 @@ document.getElementById('formulario').addEventListener('submit', async (e) => {
     const respuesta = await fetch('/calcular', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ funcion, x0, tolerancia, max_iter })
+      body: JSON.stringify({ T0, Tamb, Tcrit, k, x0, tolerancia, max_iter })
     });
 
     const datos = await respuesta.json();
-    const resultado = datos.resultado;
+    const resultado = datos.x_critico;
 
     if (typeof resultado === 'number') {
       resultadoDiv.classList.add('alert-success');
-      resultadoDiv.innerText = `Raíz encontrada: ${resultado.toFixed(6)}\nIteraciones necesarias: ${datos.contador}`;
+      resultadoDiv.innerText = `Distancia crítica: ${resultado.toFixed(6)} m\nIteraciones necesarias: ${datos.contador}`;
     } else {
       resultadoDiv.classList.add('alert-danger');
       resultadoDiv.innerText = `Error: ${resultado}`;
@@ -37,7 +41,7 @@ document.getElementById('formulario').addEventListener('submit', async (e) => {
 
     // Mostrar la imagen
     if (datos.imagen) {
-      imagenDiv.innerHTML = `<img src="data:image/png;base64,${datos.imagen}" alt="Gráfica de la función" class="img-fluid border" />`;
+      imagenDiv.innerHTML = `<img src="data:image/png;base64,${datos.imagen}" alt="Gráfica térmica" class="img-fluid border" />`;
     }
 
     // Mostrar iteraciones
@@ -45,7 +49,7 @@ document.getElementById('formulario').addEventListener('submit', async (e) => {
       let html = '<h5 class="mt-4">Iteraciones:</h5><table class="table table-striped">';
       html += '<thead><tr><th>#</th><th>x</th><th>f(x)</th></tr></thead><tbody>';
       datos.iteraciones.forEach(it => {
-        html += `<tr><td>${it.iteracion}</td><td>${it.x.toFixed(6)}</td><td>${it.fx.toFixed(6)}</td></tr>`;
+        html += `<tr><td>${it.iteracion}</td><td>${it.x.toFixed(6)}</td><td>${it.fx.toExponential(3)}</td></tr>`;
       });
       html += '</tbody></table>';
       iterDiv.innerHTML = html;

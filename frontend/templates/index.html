@@ -4,35 +4,62 @@
 <head>
     <meta charset="UTF-8" />
     <title>ThermoSolver</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- CSS de Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Tipografía Orbitron -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet" />
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
 </head>
 
 <body>
     <div class="container">
         <h1 class="text-center">ThermoSolver</h1>
-        <p class="animated-intro">Resolviendo problemas de <strong>transferencia de calor</strong> en ingeniería aplicando métodos como Newton-Raphson.</p>
+        <p class="animated-intro">
+            Análisis de <strong>transferencia de calor</strong> en tuberías industriales usando Newton-Raphson.
+        </p>
 
         <form id="formulario">
             <div class="mb-3">
-                <label for="funcion" class="form-label">Función f(x)</label>
-                <input type="text" class="form-control" id="funcion" required placeholder="Ej: 3*x^3 - 2*x + 8">
+                <label for="T0" class="form-label">Temperatura inicial T₀ (°C)</label>
+                <input type="number" class="form-control" id="T0" required placeholder="Ej: 150" />
             </div>
+
             <div class="mb-3">
-                <label for="x0" class="form-label">Valor inicial x₀</label>
-                <input type="text" class="form-control" id="x0" required placeholder="Ej: -10">
+                <label for="Tamb" class="form-label">Temperatura del ambiente T<sub>amb</sub> (°C)</label>
+                <input type="number" class="form-control" id="Tamb" required placeholder="Ej: 25" />
             </div>
+
+            <div class="mb-3">
+                <label for="Tcrit" class="form-label">Temperatura crítica T<sub>crítica</sub> (°C)</label>
+                <input type="number" class="form-control" id="Tcrit" required placeholder="Ej: 60" />
+            </div>
+
+            <div class="mb-3">
+                <label for="k" class="form-label">Coeficiente de pérdida térmica k (1/m)</label>
+                <input type="number" step="any" class="form-control" id="k" required placeholder="Ej: 0.03" />
+            </div>
+
+            <div class="mb-3">
+                <label for="x0" class="form-label">Estimación inicial x₀ (m)</label>
+                <input type="number" class="form-control" id="x0" required placeholder="Ej: 5" />
+            </div>
+
             <div class="mb-3">
                 <label for="tolerancia" class="form-label">Tolerancia</label>
-                <input type="text" class="form-control" id="tolerancia"  required placeholder="Ej: 0.001">
+                <input type="text" class="form-control" id="tolerancia" required placeholder="Ej: 0.001" />
             </div>
+
             <div class="mb-3">
                 <label for="max_iter" class="form-label">Máximo de iteraciones</label>
-                <input type="number" class="form-control" id="max_iter" value="100" required>
+                <input type="number" class="form-control" id="max_iter" value="100" required />
             </div>
-            <button type="submit" class="btn btn-primary w-100">Calcular</button>
+
+            <button type="submit" class="btn btn-primary w-100">Calcular distancia crítica</button>
         </form>
 
         <div id="resultado" class="alert mt-4 d-none" role="alert"></div>
@@ -40,6 +67,7 @@
         <div id="iteraciones" class="mt-4"></div>
     </div>
 
+    <!-- Script principal -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 

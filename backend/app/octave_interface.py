@@ -1,28 +1,30 @@
+
 import os
 import io
 import base64
 import numpy as np
 import matplotlib
-matplotlib.use('Agg') 
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from oct2py import Oct2Py
 
-# Inicializa Octave y configura el path al script newton_raphson.m
+# Inicializa Octave y configura el path al script newton_raphson_transferencia.m
 oc = Oct2Py()
 script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 oc.addpath(script_path)
 
-def ejecutar_newton(funcion, x0, tolerancia, max_iter):
+def ejecutar_newton_transferencia(T0, Tamb, Tcrit, k, x0, tolerancia, max_iter):
     try:
-        # Llama a la función de Octave y recibe raíz, iteraciones y contador
-        root, iteraciones, contador = oc.feval("newton_raphson", funcion, x0, tolerancia, max_iter, nout=3)
-        root = float(root)
+        # Llamada a la función de Octave con 7 argumentos
+        x_critico, iteraciones, contador = oc.feval(
+            "newton_raphson_transferencia", T0, Tamb, Tcrit, k, x0, tolerancia, max_iter, nout=3
+        )
+        x_critico = float(x_critico)
 
-        # Verifica si la raíz es válida
-        if np.isnan(root):
-            return "No se encontró una raíz válida.", None, [], None
+        if np.isnan(x_critico):
+            return "No se encontró una distancia válida.", None, [], None
 
-        # Convierte las iteraciones en una lista de diccionarios
+        # Convertir iteraciones a lista de diccionarios
         iter_list = []
         if iteraciones is not None:
             for fila in iteraciones:
@@ -32,51 +34,35 @@ def ejecutar_newton(funcion, x0, tolerancia, max_iter):
                     'fx': float(fila[2])
                 })
 
-        # Genera imagen de la función con la raíz
-        img = graficar_funcion(funcion, root)
-        return root, img, iter_list, int(contador)
+        # Generar imagen con la función de transferencia
+        img = graficar_transferencia(T0, Tamb, Tcrit, k, x_critico)
+
+        return x_critico, img, iter_list, int(contador)
 
     except Exception as e:
         return f"Error al ejecutar Octave: {str(e)}", None, None, None
 
-def graficar_funcion(funcion, raiz):
-    def traducir_a_numpy(expr):
-        expr = expr.replace('^', '**')
-        expr = expr.replace('exp', 'np.exp')
-        expr = expr.replace('log10', 'np.log10')
-        expr = expr.replace('log', 'np.log')  
-        expr = expr.replace('sqrt', 'np.sqrt')
-        expr = expr.replace('sin', 'np.sin')
-        expr = expr.replace('cos', 'np.cos')
-        expr = expr.replace('tan', 'np.tan')
-        return expr
-
+def graficar_transferencia(T0, Tamb, Tcrit, k, x_critico):
     try:
-        # Crear rango de valores alrededor de la raíz
-        x = np.linspace(raiz - 5, raiz + 5, 400)
+        x = np.linspace(0, x_critico + 5, 400)
+        y = Tamb + (T0 - Tamb) * np.exp(-k * x)
 
-        # Traducir la expresión para que sea compatible con NumPy/Python
-        expr = traducir_a_numpy(funcion)
-
-        # Evaluar la expresión
-        y = [eval(expr, {"x": val, "np": np}) for val in x]
-
-        # Graficar
         plt.figure(figsize=(6, 4))
-        plt.plot(x, y, label=f'f(x) = {funcion}')
-        plt.axhline(0, color='black', linewidth=0.7)
-        plt.axvline(raiz, color='red', linestyle='--', label=f'Raíz ≈ {raiz:.5f}')
-        plt.legend()
+        plt.plot(x, y, label=f'T(x) = {Tamb} + ({T0} - {Tamb})·e^(-{k}·x)', color='orange')
+        plt.axhline(Tcrit, color='gray', linestyle='--', label=f'T crítica = {Tcrit}°C')
+        plt.axvline(x_critico, color='red', linestyle='--', label=f'Distancia ≈ {x_critico:.2f} m')
+        plt.title("Disminución de temperatura en tubería")
+        plt.xlabel("Distancia (m)")
+        plt.ylabel("Temperatura (°C)")
         plt.grid(True)
+        plt.legend()
 
-        # Guardar la figura en buffer y convertir a base64
         buf = io.BytesIO()
         plt.savefig(buf, format='png')
         plt.close()
         buf.seek(0)
 
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-        return img_base64
+        return base64.b64encode(buf.read()).decode('utf-8')
 
     except Exception as e:
         print(f"Error al graficar: {e}")
